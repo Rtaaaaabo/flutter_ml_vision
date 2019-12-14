@@ -86,7 +86,7 @@ packages:
     source: hosted
     version: "0.4.1+4"
   firebase_ml_vision:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_ml_vision
       url: "https://pub.dartlang.org"
@@ -98,7 +98,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_camera_ml_vision:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_camera_ml_vision
       url: "https://pub.dartlang.org"
