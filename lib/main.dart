@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           RaisedButton(
-            child: Text('Scan product'),
+            child: Text('スキャン'),
             onPressed: () async {
               final barcode = await Navigator.of(context).push<Barcode>(
                 MaterialPageRoute(
@@ -47,7 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               );
-              print(barcode);
               if (barcode == null) {
                 return;
               }
@@ -87,6 +86,7 @@ class _ScanPageState extends State<ScanPage> {
                 return;
               }
               resultSent = true;
+              print(resultSent);
               Navigator.of(context).pop<Barcode>(barcodes.first);
             },
           ),

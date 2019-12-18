@@ -40,7 +40,9 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NScameraUsageDescription</key>
-	<string>Can I use the camera please?</string>
+	<string>カメラの使用を許可します。</string>
+	<key>NSCameraUsageDescription</key>
+	<string>カメラでの撮影を許可します。</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSMicrophoneUsageDescription</key>
