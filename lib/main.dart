@@ -1,5 +1,6 @@
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_camera_ml_vision/flutter_camera_ml_vision.dart';
 
 void main() => runApp(MyApp());
@@ -73,25 +74,40 @@ class ScanPage extends StatefulWidget {
 
 class _ScanPageState extends State<ScanPage> {
   bool resultSent = false;
+  BarcodeDetector detector = FirebaseVision.instance.barcodeDetector();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: CameraMlVision<List<Barcode>>(
-            detector: FirebaseVision.instance.barcodeDetector().detectInImage,
-            onResult: (List<Barcode> barcodes) {
-              if (!mounted || resultSent) {
-                return;
-              }
-              resultSent = true;
-              print(resultSent);
-              Navigator.of(context).pop<Barcode>(barcodes.first);
-            },
-          ),
+        body: SafeArea(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: CameraMlVision<List<Barcode>>(
+          overlayBuilder: (c) {
+            return Container(
+              decoration: ShapeDecoration(
+                  shape: _ScannerOverlayShape(
+                borderColor: Theme.of(context).primaryColor,
+                borderWidth: 3.0,
+              )),
+            );
+          },
+          detector: detector.detectInImage,
+          onResult: (List<Barcode> barcodes) {
+            if (!mounted ||
+                resultSent ||
+                barcodes == null ||
+                barcodes.isEmpty) {
+              return;
+            }
+            resultSent = true;
+            Navigator.of(context).pop<Barcode>(barcodes.first);
+          },
+          onDispose: () {
+            detector.close();
+          },
         ),
       ),
-    );
+    ));
   }
 }
