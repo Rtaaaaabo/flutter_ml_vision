@@ -1,3 +1,5 @@
+// import 'dart:html';
+
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Firebase ML KIT'),
+      home: ScanPage(title: 'Firebase ML KIT'),
     );
   }
 }
@@ -69,13 +71,16 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class ScanPage extends StatefulWidget {
+  final String title;
+  ScanPage({Key key, this.title}) : super(key: key);
   @override
   _ScanPageState createState() => _ScanPageState();
 }
 
 class _ScanPageState extends State<ScanPage> {
   bool resultSent = false;
-  BarcodeDetector detector = FirebaseVision.instance.barcodeDetector();
+  BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
+  FaceDetector faceDetector = FirebaseVision.instance.faceDetector();
 
   @override
   Widget build(BuildContext context) {
@@ -83,31 +88,32 @@ class _ScanPageState extends State<ScanPage> {
         body: SafeArea(
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
-        child: CameraMlVision<List<Barcode>>(
-          overlayBuilder: (c) {
-            return Container(
-                // decoration: ShapeDecoration(
-                //     shape: _ScannerOverlayShape(
-                //   borderColor: Theme.of(context).primaryColor,
-                //   borderWidth: 3.0,
-                // )),
-                );
-          },
-          detector: detector.detectInImage,
-          onResult: (List<Barcode> barcodes) {
-            if (!mounted ||
-                resultSent ||
-                barcodes == null ||
-                barcodes.isEmpty) {
-              return;
-            }
-            resultSent = true;
-            Navigator.of(context).pop<Barcode>(barcodes.first);
-          },
-          onDispose: () {
-            detector.close();
-          },
-        ),
+        child: CameraMlVision<List<Face>>(
+            onResult: (List<Face> infoFaces) {
+              if (!mounted ||
+                  resultSent ||
+                  infoFaces == null ||
+                  infoFaces.isEmpty) {
+                return;
+              }
+            },
+            detector: faceDetector.detect),
+        // child: CameraMlVision<List<Barcode>>(
+        //   detector: barcodeDetector.detectInImage,
+        //   onResult: (List<Barcode> barcodes) {
+        //     if (!mounted ||
+        //         resultSent ||
+        //         barcodes == null ||
+        //         barcodes.isEmpty) {
+        //       return;
+        //     }
+        //     resultSent = true;
+        //     Navigator.of(context).pop<Barcode>(barcodes.first);
+        //   },
+        //   onDispose: () {
+        //     barcodeDetector.close();
+        //   },
+        // ),
       ),
     ));
   }
