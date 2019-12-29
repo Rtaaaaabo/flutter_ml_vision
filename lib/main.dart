@@ -89,31 +89,17 @@ class _ScanPageState extends State<ScanPage> {
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: CameraMlVision<List<Face>>(
-            onResult: (List<Face> infoFaces) {
-              if (!mounted ||
-                  resultSent ||
-                  infoFaces == null ||
-                  infoFaces.isEmpty) {
-                return;
-              }
-            },
-            detector: faceDetector.detect),
-        // child: CameraMlVision<List<Barcode>>(
-        //   detector: barcodeDetector.detectInImage,
-        //   onResult: (List<Barcode> barcodes) {
-        //     if (!mounted ||
-        //         resultSent ||
-        //         barcodes == null ||
-        //         barcodes.isEmpty) {
-        //       return;
-        //     }
-        //     resultSent = true;
-        //     Navigator.of(context).pop<Barcode>(barcodes.first);
-        //   },
-        //   onDispose: () {
-        //     barcodeDetector.close();
-        //   },
-        // ),
+          detector: faceDetector.processImage,
+          onResult: (List<Face> infoFaces) {
+            if (!mounted ||
+                resultSent ||
+                infoFaces == null ||
+                infoFaces.isEmpty) {
+              return;
+            }
+            print(infoFaces);
+          },
+        ),
       ),
     ));
   }
