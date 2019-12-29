@@ -90,14 +90,13 @@ class _ScanPageState extends State<ScanPage> {
         width: MediaQuery.of(context).size.width,
         child: CameraMlVision<List<Face>>(
           detector: faceDetector.processImage,
-          onResult: (List<Face> infoFaces) {
+          onResult: (infoFaces) {
             if (!mounted ||
                 resultSent ||
                 infoFaces == null ||
                 infoFaces.isEmpty) {
               return;
             }
-            print(infoFaces);
           },
         ),
       ),
