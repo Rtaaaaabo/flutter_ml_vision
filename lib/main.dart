@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter_camera_ml_vision/flutter_camera_ml_vision.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MyApp());
 
@@ -45,6 +46,7 @@ class _ScanPageState extends State<ScanPage> {
                 infoFaces.isEmpty) {
               return;
             }
+            infoFaces.forEach((data) => print(data));
           },
         ),
       ),
