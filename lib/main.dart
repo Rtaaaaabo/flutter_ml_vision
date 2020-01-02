@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter_camera_ml_vision/flutter_camera_ml_vision.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:camera/camera.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,9 +16,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: ScanPage(title: 'Firebase ML KIT'),
+      // home: HomePage(title: 'mkkit face recognition'),
     );
   }
 }
+
+// class HomePage extends StatefulWidget {
+
+// }
 
 class ScanPage extends StatefulWidget {
   final String title;
@@ -39,14 +44,16 @@ class _ScanPageState extends State<ScanPage> {
         width: MediaQuery.of(context).size.width,
         child: CameraMlVision<List<Face>>(
           detector: faceDetector.processImage,
+          cameraLensDirection: CameraLensDirection.front,
           onResult: (List<Face> infoFaces) {
+            // print(infoFaces);
             if (!mounted ||
                 resultSent ||
                 infoFaces == null ||
                 infoFaces.isEmpty) {
               return;
             }
-            infoFaces.forEach((data) => print(data));
+            infoFaces.forEach((data) => print(data.smilingProbability));
           },
         ),
       ),
