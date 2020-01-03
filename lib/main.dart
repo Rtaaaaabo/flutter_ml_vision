@@ -1,8 +1,6 @@
-// import 'dart:html';
-
 import 'package:flutter/material.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter_camera_ml_vision/flutter_camera_ml_vision.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:camera/camera.dart';
 
 void main() => runApp(MyApp());
@@ -11,6 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Pay Per Laugh for Japan',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -21,10 +20,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class HomePage extends StatefulWidget {
-
-// }
-
 class ScanPage extends StatefulWidget {
   final String title;
   ScanPage({Key key, this.title}) : super(key: key);
@@ -34,7 +29,11 @@ class ScanPage extends StatefulWidget {
 
 class _ScanPageState extends State<ScanPage> {
   bool resultSent = false;
-  final FaceDetector faceDetector = FirebaseVision.instance.faceDetector();
+  final FaceDetector faceDetector =
+      FirebaseVision.instance.faceDetector(FaceDetectorOptions(
+    enableClassification: true,
+    mode: FaceDetectorMode.accurate,
+  ));
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +52,7 @@ class _ScanPageState extends State<ScanPage> {
                 infoFaces.isEmpty) {
               return;
             }
-            infoFaces.forEach((data) => print(data.smilingProbability));
+            print(infoFaces.first.smilingProbability);
           },
         ),
       ),
