@@ -1,11 +1,12 @@
-import 'dart:async';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import 'dart:async';
 import 'ocr_engine.dart';
 
 List<CameraDescription> cameras;
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
   runApp(OcrApp());
 }
@@ -14,10 +15,10 @@ class OcrApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'pay per laugh',
+      title: "Flutter OCR",
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Pay Per Laugh'),
+          title: Text("Flutter OCR"),
         ),
         body: CameraPage(),
       ),
@@ -39,11 +40,12 @@ class _CameraAppState extends State<CameraPage> {
   @override
   void initState() {
     super.initState();
-    controller = CameraController(cameras[0], ResolutionPreset.low);
+    controller = CameraController(cameras[0], ResolutionPreset.medium);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
       }
+
       setState(() {});
     });
   }
@@ -71,49 +73,47 @@ class _CameraAppState extends State<CameraPage> {
       Container(
         height: 100,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            MaterialButton(
-              child: Text('Start Scanning'),
-              textColor: Colors.white,
-              color: Colors.blue,
-              onPressed: () async {
-                _timer =
-                    Timer.periodic(Duration(seconds: 3), (currentTimer) async {
-                  await controller
-                      .startImageStream((CameraImage availableImage) async {
-                    if (_isScanBusy) {
-                      print("1.5 ------- isScanBusy, skipping....");
-                      return;
-                    }
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              MaterialButton(
+                  child: Text("Start Scanning"),
+                  textColor: Colors.white,
+                  color: Colors.blue,
+                  onPressed: () async {
+                    _timer = Timer.periodic(Duration(seconds: 3),
+                        (currentTimer) async {
+                      await controller
+                          .startImageStream((CameraImage availableImage) async {
+                        if (_isScanBusy) {
+                          print("1.5 -------- isScanBusy, skipping...");
+                          return;
+                        }
 
-                    print("1--------- isScanBusy = true");
-                    _isScanBusy = true;
+                        print("1 -------- isScanBusy = true");
+                        _isScanBusy = true;
 
-                    OcrManager.scanText(availableImage).then((textVision) {
-                      setState(() {
-                        _textDetected = textVision ?? "";
+                        OcrManager.scanText(availableImage).then((textVision) {
+                          setState(() {
+                            _textDetected = textVision ?? "";
+                          });
+
+                          _isScanBusy = false;
+                        }).catchError((error) {
+                          _isScanBusy = false;
+                        });
                       });
-                      _isScanBusy = false;
-                    }).catchError((error) {
-                      _isScanBusy = false;
                     });
-                  });
-                });
-              },
-            ),
-            MaterialButton(
-              child: Text("Stop Scanning"),
-              textColor: Colors.white,
-              color: Colors.red,
-              onPressed: () async {
-                _timer?.cancel();
-                await controller.stopImageStream();
-              },
-            )
-          ],
-        ),
-      )
+                  }),
+              MaterialButton(
+                  child: Text("Stop Scanning"),
+                  textColor: Colors.white,
+                  color: Colors.red,
+                  onPressed: () async {
+                    _timer?.cancel();
+                    await controller.stopImageStream();
+                  })
+            ]),
+      ),
     ]);
   }
 
