@@ -31,8 +31,8 @@ class ScanPage extends StatefulWidget {
 class _ScanPageState extends State<ScanPage> {
   CameraController camera;
   FaceDetector detector;
-
   bool resultSent = false;
+
   final FaceDetector faceDetector =
       FirebaseVision.instance.faceDetector(FaceDetectorOptions(
     enableClassification: true,
