@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/foundation.dart';
+import 'utils.dart';
 
 class FaceExpressionReader extends ValueNotifier<Face> {
   FaceExpressionReader() : super(null) {

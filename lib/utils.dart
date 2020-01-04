@@ -22,12 +22,18 @@ void cameraBytesToDetector({
     detector.processImage(FirebaseVisionImage.fromBytes(
         image.planes[0].bytes,
         FirebaseVisionImageMetadata(
-          size: camera.value.previewSize,
-          rotation: ImageRotation.rotation270,
-        )));
-        .then((faces) {
-          updateFace(faces.isEmpty ? null : faces[0]);
-          isDetecting = false;
-        });
+            rawFormat: image.format.raw,
+            size: camera.value.previewSize,
+            rotation: ImageRotation.rotation270,
+            planeData: image.planes
+                .map((currentPlane) => FirebaseVisionImagePlaneMetadata(
+                    bytesPerRow: currentPlane.bytesPerRow,
+                    height: currentPlane.height,
+                    width: currentPlane.width))
+                .toList())));
+    // .then((faces) {
+    //   updateFace(faces.isEmpty ? null : faces[0]);
+    //   isDetecting = false;
+    // });
   });
 }

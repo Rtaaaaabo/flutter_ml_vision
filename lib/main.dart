@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_camera_ml_vision/flutter_camera_ml_vision.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:camera/camera.dart';
+import 'utils.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,6 +29,9 @@ class ScanPage extends StatefulWidget {
 }
 
 class _ScanPageState extends State<ScanPage> {
+  CameraController camera;
+  FaceDetector detector;
+
   bool resultSent = false;
   final FaceDetector faceDetector =
       FirebaseVision.instance.faceDetector(FaceDetectorOptions(
@@ -52,7 +56,6 @@ class _ScanPageState extends State<ScanPage> {
                 infoFaces.isEmpty) {
               return;
             }
-            print(infoFaces.first.smilingProbability);
           },
         ),
       ),
