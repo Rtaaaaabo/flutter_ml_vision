@@ -5,9 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 
 class OcrManager {
-  static Future<String> scanText(CameraImage availableImage) async {
-    print('scanning!!...');
-
+  static Future<List<Face>> scanText(CameraImage availableImage) async {
     final FirebaseVisionImageMetadata metadata = FirebaseVisionImageMetadata(
         rawFormat: availableImage.format.raw,
         size: Size(
@@ -22,25 +20,28 @@ class OcrManager {
 
     final FirebaseVisionImage visionImage =
         FirebaseVisionImage.fromBytes(availableImage.planes[0].bytes, metadata);
-    final TextRecognizer textRecognizer =
-        FirebaseVision.instance.textRecognizer();
-    final VisionText visionText =
-        await textRecognizer.processImage(visionImage);
 
-    print('-------------visonText:${visionText.text}');
+    // final TextRecognizer textRecognizer =
+    //     FirebaseVision.instance.textRecognizer();
+    final FaceDetector faceDetector =
+        FirebaseVision.instance.faceDetector(FaceDetectorOptions(
+      enableClassification: true,
+      mode: FaceDetectorMode.accurate,
+    ));
+    // final VisionText visionText =
+    //     await textRecognizer.processImage(visionImage);
 
-    for (TextBlock block in visionText.blocks) {
-      print(block.text);
+    final List<Face> faces = await faceDetector.processImage(visionImage);
+    print(faces);
 
-      for (TextLine line in block.lines) {
-        print(line.text);
-
-        for (TextElement element in line.elements) {
-          print(element.text);
-        }
-      }
-    }
-    return visionText?.text;
+    // for (TextBlock block in visionText.blocks) {
+    //   for (TextLine line in block.lines) {
+    //     for (TextElement element in line.elements) {
+    //       print(element);
+    //     }
+    //   }
+    // }
+    return faces;
   }
 
   Uint8List concatenatePlanes(List<Plane> planes) {

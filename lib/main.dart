@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:async';
 import 'ocr_engine.dart';
+// import 'utils.dart';
 
 List<CameraDescription> cameras;
 
@@ -36,16 +37,16 @@ class _CameraAppState extends State<CameraPage> {
   bool _isScanBusy = false;
   Timer _timer;
   String _textDetected = "no text detected...";
+  // String _smilingDetected = "0";
 
   @override
   void initState() {
     super.initState();
-    controller = CameraController(cameras[0], ResolutionPreset.medium);
+    controller = CameraController(cameras[0], ResolutionPreset.low);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
       }
-
       setState(() {});
     });
   }
@@ -85,18 +86,13 @@ class _CameraAppState extends State<CameraPage> {
                       await controller
                           .startImageStream((CameraImage availableImage) async {
                         if (_isScanBusy) {
-                          print("1.5 -------- isScanBusy, skipping...");
                           return;
                         }
-
-                        print("1 -------- isScanBusy = true");
                         _isScanBusy = true;
-
                         OcrManager.scanText(availableImage).then((textVision) {
                           setState(() {
                             _textDetected = textVision ?? "";
                           });
-
                           _isScanBusy = false;
                         }).catchError((error) {
                           _isScanBusy = false;
