@@ -16,10 +16,10 @@ class OcrApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Flutter OCR",
+      title: "Face Detect",
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Flutter OCR"),
+          title: Text("Face Detect"),
         ),
         body: CameraPage(),
       ),
@@ -36,7 +36,7 @@ class _CameraAppState extends State<CameraPage> {
   CameraController controller;
   bool _isScanBusy = false;
   Timer _timer;
-  String _textDetected = "no text detected...";
+  String _textDetected = "0";
   // String _smilingDetected = "0";
 
   @override
@@ -81,22 +81,22 @@ class _CameraAppState extends State<CameraPage> {
                   textColor: Colors.white,
                   color: Colors.blue,
                   onPressed: () async {
-                    _timer = Timer.periodic(Duration(seconds: 3),
-                        (currentTimer) async {
-                      await controller
-                          .startImageStream((CameraImage availableImage) async {
-                        if (_isScanBusy) {
-                          return;
-                        }
-                        _isScanBusy = true;
-                        OcrManager.scanText(availableImage).then((textVision) {
-                          setState(() {
-                            _textDetected = textVision ?? "";
-                          });
-                          _isScanBusy = false;
-                        }).catchError((error) {
-                          _isScanBusy = false;
+                    // _timer = Timer.periodic(Duration(seconds: 3),
+                    await controller
+                        .startImageStream((CameraImage availableImage) async {
+                      if (_isScanBusy) {
+                        return;
+                      }
+                      _isScanBusy = true;
+                      OcrManager.scanFace(availableImage).then((detectFace) {
+                        print(detectFace[0].smilingProbability);
+                        setState(() {
+                          _textDetected =
+                              detectFace[0].smilingProbability ?? "";
                         });
+                        _isScanBusy = false;
+                      }).catchError((error) {
+                        _isScanBusy = false;
                       });
                     });
                   }),
