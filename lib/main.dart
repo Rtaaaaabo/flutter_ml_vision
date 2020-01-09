@@ -36,7 +36,7 @@ class _CameraAppState extends State<CameraPage> {
   CameraController controller;
   bool _isScanBusy = false;
   Timer _timer;
-  String _textDetected = "0";
+  String _faceDetected = "0";
   // String _smilingDetected = "0";
 
   @override
@@ -58,6 +58,27 @@ class _CameraAppState extends State<CameraPage> {
     super.dispose();
   }
 
+  void _startStream() async {
+    await controller.startImageStream((CameraImage availableImage) async {
+      if (_isScanBusy) {
+        return;
+      }
+      _isScanBusy = true;
+      OcrManager.scanFace(availableImage).then((detectFace) {
+        if (detectFace[0].smilingProbability > 0.2) {
+          setState(() {
+            print(detectFace[0].smilingProbability);
+            _faceDetected =
+                (detectFace[0].smilingProbability).toStringAsFixed(3);
+          });
+        }
+        _isScanBusy = false;
+      }).catchError((error) {
+        _isScanBusy = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!controller.value.isInitialized) {
@@ -67,7 +88,7 @@ class _CameraAppState extends State<CameraPage> {
       Expanded(child: _cameraPreviewWidget()),
       Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
         Text(
-          _textDetected,
+          _faceDetected,
           style: TextStyle(fontStyle: FontStyle.italic, fontSize: 34),
         )
       ]),
@@ -81,24 +102,7 @@ class _CameraAppState extends State<CameraPage> {
                   textColor: Colors.white,
                   color: Colors.blue,
                   onPressed: () async {
-                    // _timer = Timer.periodic(Duration(seconds: 3),
-                    await controller
-                        .startImageStream((CameraImage availableImage) async {
-                      if (_isScanBusy) {
-                        return;
-                      }
-                      _isScanBusy = true;
-                      OcrManager.scanFace(availableImage).then((detectFace) {
-                        print(detectFace[0].smilingProbability);
-                        setState(() {
-                          _textDetected =
-                              detectFace[0].smilingProbability ?? "";
-                        });
-                        _isScanBusy = false;
-                      }).catchError((error) {
-                        _isScanBusy = false;
-                      });
-                    });
+                    _startStream();
                   }),
               MaterialButton(
                   child: Text("Stop Scanning"),
