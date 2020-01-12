@@ -1,30 +1,18 @@
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:async';
 import 'ocr_engine.dart';
-// import 'utils.dart';
+import 'utils.dart';
 
 List<CameraDescription> cameras;
+// CameraDescription cameras;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
-  runApp(OcrApp());
-}
-
-class OcrApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Face Detect",
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Face Detect"),
-        ),
-        body: CameraPage(),
-      ),
-    );
-  }
+  // cameras = getFrontCamera();
+  runApp(CameraPage());
 }
 
 class CameraPage extends StatefulWidget {
@@ -37,18 +25,12 @@ class _CameraAppState extends State<CameraPage> {
   bool _isScanBusy = false;
   Timer _timer;
   String _faceDetected = "0";
-  // String _smilingDetected = "0";
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
-    controller = CameraController(cameras[0], ResolutionPreset.low);
-    controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    });
+    controller = CameraController(await getFrontCamera(), ResolutionPreset.low);
+    await controller.initialize();
   }
 
   @override

@@ -28,7 +28,6 @@ class OcrManager {
     ));
 
     final List<Face> faces = await faceDetector.processImage(visionImage);
-
     return faces;
   }
 

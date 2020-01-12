@@ -8,12 +8,12 @@ class FaceExpressionReader extends ValueNotifier<Face> {
     init();
   }
 
-  CameraController camera;
+  CameraController controller;
   FaceDetector detector;
 
   void init() async {
-    camera = CameraController(await getFrontCamera(), ResolutionPreset.low);
-    await camera.initialize();
+    controller = CameraController(await getFrontCamera(), ResolutionPreset.low);
+    await controller.initialize();
 
     detector = FirebaseVision.instance.faceDetector(FaceDetectorOptions(
       enableClassification: true,
@@ -21,7 +21,7 @@ class FaceExpressionReader extends ValueNotifier<Face> {
     ));
 
     cameraBytesToDetector(
-        camera: camera,
+        camera: controller,
         detector: detector,
         updateFace: (face) {
           value = face;
