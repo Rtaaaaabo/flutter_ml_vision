@@ -53,4 +53,16 @@ class SmilePainter extends CustomPainter {
           radius / 8, Paint());
     }
   }
+
+  @override
+  bool shouldRepaint(SmilePainter oldDelegate) {
+    return image != oldDelegate.image || faces != oldDelegate.faces;
+  }
+}
+
+class SmilePainterLiveCamera extends CustomPainter {
+  final Size imageSize;
+  final List<Face> faces;
+
+  SmilePainterLiveCamera(this.imageSize, this.faces);
 }
