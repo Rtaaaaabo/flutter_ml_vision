@@ -35,17 +35,18 @@ class _FaceDetectionFromImageState extends State<FaceDetectionFromImage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Face detection with Smile'),,
+        title: Text('Face detection with Smile'),
       ),
       body: Center(
-        child: loading ? Text('Press The floating Action Button for load image!') :
-        FittedBox(
-          child: SizedBox(
-            width: image.width.toDouble(),
-            height: image.height.toDouble(),
-            child: FacePaint(painter: SmilePainter(image, faces)),
-          ),
-        ),
+        child: loading
+            ? Text('Press The floating Action Button for load image!')
+            : FittedBox(
+                child: SizedBox(
+                  width: image.width.toDouble(),
+                  height: image.height.toDouble(),
+                  child: FacePaint(painter: SmilePainter(image, faces)),
+                ),
+              ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: pickAndProcessImage,
@@ -54,4 +55,3 @@ class _FaceDetectionFromImageState extends State<FaceDetectionFromImage> {
     );
   }
 }
-
